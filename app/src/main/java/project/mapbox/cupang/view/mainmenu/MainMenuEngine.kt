@@ -2,6 +2,8 @@ package project.mapbox.cupang.view.mainmenu
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.afollestad.materialdialogs.MaterialDialog
 import com.tomtom.online.sdk.common.location.LatLng
 import com.tomtom.online.sdk.common.util.DistanceCalculator
 import com.tomtom.online.sdk.map.*
@@ -12,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import project.mapbox.cupang.R
 import project.mapbox.cupang.data.Api.ApiFactory
+import project.mapbox.cupang.util.estTime
 import project.mapbox.cupang.util.invisible
 import project.mapbox.cupang.util.visible
 
@@ -27,6 +30,7 @@ class MainMenuEngine : AppCompatActivity() , MainMenuView , OnMapReadyCallback {
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
         mapFragment!!.getAsyncMap(this)
+        btn_refresh.setOnClickListener { GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(baseContext) } }
         hideLoading()
     }
 
@@ -42,9 +46,9 @@ class MainMenuEngine : AppCompatActivity() , MainMenuView , OnMapReadyCallback {
                 mapPaddingVertical , mapPaddingHorizontal ,
                 mapPaddingVertical , mapPaddingHorizontal
         )
-        tomtomMap.uiSettings.currentLocationView.setMargins(24,24,24,24)
-        tomtomMap.uiSettings.compassView.setMargins(24,24,24,24)
-        GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(tomtomMap) }
+        tomtomMap.uiSettings.currentLocationView.setMargins(24 , 24 , 24 , 24)
+        tomtomMap.uiSettings.compassView.setMargins(24 , 24 , 24 , 24)
+        GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(baseContext) }
     }
 
     override fun showLoading() {
@@ -64,9 +68,41 @@ class MainMenuEngine : AppCompatActivity() , MainMenuView , OnMapReadyCallback {
         showUserLoc()
         val lastUserLocation = map?.userLocation?.let { LatLng(it) }
         for (i in mLocation.indices) {
-            map!!.addMarker(MarkerBuilder(mLocation[i]).icon(Icon.Factory.fromResources(this , R.drawable.fish)).markerBalloon(SimpleMarkerBalloon("${mBalloon[i]} \n\n " +
-                    resources.getString(R.string.jarak_ke_lokasi) +
-                    "${DistanceCalculator.calcDistInKilometers(lastUserLocation , mLocation[i]).toInt()}km")))
+            map!!.addMarker(
+                    MarkerBuilder(mLocation[i]).icon(Icon.Factory.fromResources(this , R.drawable.fish)).markerBalloon(
+                            SimpleMarkerBalloon(
+                                    "${mBalloon[i]} \n\n " +
+                                            resources.getString(R.string.jarak_ke_lokasi) +
+                                            "${DistanceCalculator.calcDistInKilometers(lastUserLocation , mLocation[i]).toInt()}km" +
+                                            "\n Waktu tempuh :${estTime(DistanceCalculator.calcDistInKilometers(lastUserLocation , mLocation[i]).toInt())}"
+                            )
+                    )
+            )
+        }
+    }
+
+    override fun showNetworkError() {
+        MaterialDialog(this).show {
+            title(R.string.network_error)
+            message(R.string.network_error_sub)
+            positiveButton(R.string.network_error_sub2) {
+                GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(baseContext) }
+            }
+        }
+    }
+
+    override fun getgpsPermission() {
+        ActivityCompat.requestPermissions(this , arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION) , 1)
+    }
+
+    override fun showGpsError() {
+        MaterialDialog(this).show {
+            title(R.string.gps_error)
+            message(R.string.gps_error_sub)
+            positiveButton(R.string.gps_error_sub2) {
+                GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(baseContext) }
+                getgpsPermission()
+            }
         }
     }
 

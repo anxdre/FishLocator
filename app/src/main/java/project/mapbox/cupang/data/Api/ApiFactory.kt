@@ -9,9 +9,9 @@ import project.mapbox.cupang.data.model.FishLocation
 
 @Suppress("UNCHECKED_CAST")
 class ApiFactory : ApiRepository {
-    override fun getDataAsync(): Deferred<Any> = reqDataAsync(
+    override fun getDataAsync(): Deferred<MutableList<FishLocation>> = reqDataAsync(
         Endpoint.BASE_URL + Endpoint.GET_IKAN , FishLocation::class.java
-    )
+    ) as Deferred<MutableList<FishLocation>>
 
     private fun reqDataAsync(url: String, type: Class<*>): Deferred<Any> {
         return GlobalScope.async {
@@ -20,12 +20,8 @@ class ApiFactory : ApiRepository {
                 .setTag("fetchData")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .executeForJSONArray()
-            if (!response.isSuccess) {
-                throw response.error
-            }
+                    .executeForObjectList(type)
             response.result
-
         }
     }
 }

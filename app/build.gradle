@@ -39,6 +39,8 @@ dependencies {
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    implementation 'com.afollestad.material-dialogs:core:3.1.0'
+
     implementation 'com.tomtom.online:sdk-maps:2.4148'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

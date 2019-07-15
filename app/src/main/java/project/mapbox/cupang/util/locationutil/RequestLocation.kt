@@ -4,10 +4,9 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import java.util.*
 
 object RequestLocation {
-    var location: Location? = null
+    private var location: Location? = null
     fun getCurrentLocation(context: Context, locationListener: LocationListener): String {
         try {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
