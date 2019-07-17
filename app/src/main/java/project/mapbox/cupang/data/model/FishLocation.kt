@@ -1,4 +1,5 @@
 package project.mapbox.cupang.data.model
+
 import com.google.gson.annotations.SerializedName
 
 

@@ -9,9 +9,11 @@ import project.mapbox.cupang.util.gpsCheckPermission
 class MainMenuPresenter(private val mView: MainMenuView, private val mApi: ApiRepository) {
     private val mLocation = ArrayList<LatLng>()
     private var mBalloon = ArrayList<String>()
+    private var gpsPermission: Boolean = false
 
     suspend fun initData(context: Context) {
-        if (!gpsCheckPermission(context)) {
+        gpsPermission = gpsCheckPermission(context)
+        if (!gpsPermission) {
             mView.showGpsError()
         } else {
             mLocation.clear()
@@ -22,13 +24,13 @@ class MainMenuPresenter(private val mView: MainMenuView, private val mApi: ApiRe
             } else {
                 for (i in mFishLocation.indices) {
                     mLocation.add(
-                            LatLng(mFishLocation[i].latitude!!.toDouble() , mFishLocation[i].longtitude!!.toDouble())
+                        LatLng(mFishLocation[i].latitude!!.toDouble(), mFishLocation[i].longtitude!!.toDouble())
                     )
                     mBalloon.add(
-                            mFishLocation[i].deskripsi.toString()
+                        mFishLocation[i].deskripsi.toString()
                     )
                 }
-                mView.attachData(mLocation , mBalloon)
+                mView.attachData(mLocation, mBalloon)
             }
         }
     }
