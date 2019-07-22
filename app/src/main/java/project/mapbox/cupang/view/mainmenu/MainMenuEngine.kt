@@ -34,20 +34,20 @@ class MainMenuEngine : AppCompatActivity(), MainMenuView, OnMapReadyCallback {
         hideLoading()
     }
 
-    override fun onMapReady(tomtomMap: TomtomMap) {
-        this.map = tomtomMap
+    override fun onMapReady(mMap: TomtomMap) {
+        this.map = mMap
         val mapPaddingVertical = resources.getDimension(R.dimen.map_padding_vertical).toDouble()
         val mapPaddingHorizontal = resources.getDimension(R.dimen.map_padding_horizontal).toDouble()
 
-        tomtomMap.uiSettings.currentLocationView.show()
-        tomtomMap.uiSettings.mapTilesType = MapTilesType.VECTOR
-        tomtomMap.isMyLocationEnabled = true
-        tomtomMap.setPadding(
+        mMap.uiSettings.currentLocationView.show()
+        mMap.uiSettings.mapTilesType = MapTilesType.VECTOR
+        mMap.isMyLocationEnabled = true
+        mMap.setPadding(
             mapPaddingVertical, mapPaddingHorizontal,
             mapPaddingVertical, mapPaddingHorizontal
         )
-        tomtomMap.uiSettings.currentLocationView.setMargins(24, 24, 24, 24)
-        tomtomMap.uiSettings.compassView.setMargins(24, 24, 24, 24)
+        mMap.uiSettings.currentLocationView.setMargins(24, 24, 24, 24)
+        mMap.uiSettings.compassView.setMargins(24, 24, 24, 24)
         GlobalScope.launch(Dispatchers.Main) { mPresenter.initData(baseContext) }
     }
 
