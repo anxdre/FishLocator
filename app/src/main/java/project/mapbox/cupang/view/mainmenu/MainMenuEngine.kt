@@ -79,7 +79,9 @@ class MainMenuEngine : AppCompatActivity(), MainMenuView, OnMapReadyCallback {
                                         lastUserLocation,
                                         mLocation[i]
                                     ).toInt()
-                                )}"
+                                )}\n" +
+                                "\n Latitude : ${mLocation[i].latitude}" +
+                                "\n Longitude : ${mLocation[i].longitude}"
                     )
                 )
             )
