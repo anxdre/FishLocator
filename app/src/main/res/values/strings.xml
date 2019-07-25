@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fish Locator</string>
+    <string name="app_name">Mobile Virtual Assistant</string>
     <string name="jarak_ke_lokasi">Jarak ke lokasi :</string>
     <string name="network_error">Tidak dapat mendapat informasi</string>
     <string name="network_error_sub">Pastikan perangkat terhubung pada internet</string>

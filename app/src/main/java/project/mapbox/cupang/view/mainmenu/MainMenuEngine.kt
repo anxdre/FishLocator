@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.tomtom.online.sdk.common.location.LatLng
-import com.tomtom.online.sdk.common.util.DistanceCalculator
 import com.tomtom.online.sdk.map.*
 import com.tomtom.online.sdk.map.model.MapTilesType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,7 +13,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import project.mapbox.cupang.R
 import project.mapbox.cupang.data.Api.ApiFactory
-import project.mapbox.cupang.util.estTime
 import project.mapbox.cupang.util.invisible
 import project.mapbox.cupang.util.visible
 
@@ -40,7 +38,7 @@ class MainMenuEngine : AppCompatActivity(), MainMenuView, OnMapReadyCallback {
         val mapPaddingHorizontal = resources.getDimension(R.dimen.map_padding_horizontal).toDouble()
 
         mMap.uiSettings.currentLocationView.show()
-        mMap.uiSettings.mapTilesType = MapTilesType.VECTOR
+        mMap.uiSettings.mapTilesType = MapTilesType.RASTER
         mMap.isMyLocationEnabled = true
         mMap.setPadding(
             mapPaddingVertical, mapPaddingHorizontal,
@@ -65,21 +63,14 @@ class MainMenuEngine : AppCompatActivity(), MainMenuView, OnMapReadyCallback {
     }
 
     override fun attachData(mLocation: ArrayList<LatLng>, mBalloon: ArrayList<String>) {
-        showUserLoc()
-        val lastUserLocation = map?.userLocation?.let { LatLng(it) }
+//        showUserLoc()
+//        val lastUserLocation = map?.userLocation?.let { LatLng(it) }
         for (i in mLocation.indices) {
             map!!.addMarker(
                 MarkerBuilder(mLocation[i]).icon(Icon.Factory.fromResources(this, R.drawable.fish)).markerBalloon(
                     SimpleMarkerBalloon(
                         "${mBalloon[i]} \n\n " +
                                 resources.getString(R.string.jarak_ke_lokasi) +
-                                "${DistanceCalculator.calcDistInKilometers(lastUserLocation, mLocation[i]).toInt()}km" +
-                                "\n Waktu tempuh :${estTime(
-                                    DistanceCalculator.calcDistInKilometers(
-                                        lastUserLocation,
-                                        mLocation[i]
-                                    ).toInt()
-                                )}\n" +
                                 "\n Latitude : ${mLocation[i].latitude}" +
                                 "\n Longitude : ${mLocation[i].longitude}"
                     )
